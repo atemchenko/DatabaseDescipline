@@ -155,7 +155,7 @@ An attribute composed of many other attributes is called a _**composite attribut
 
 ![alt text](images\CompositeAttribute.JPG)
 
-An attribute consisting of more than one value for a given entity. For example, Phone*No (can be more than one for a given student). In ER diagram, a \*\*\_multivalued attribute *\*\* is represented by a double oval.
+An attribute consisting of more than one value for a given entity. For example, PhoneNo (can be more than one for a given student). In ER diagram, a _**multivalued attribute**_ is represented by a double oval.
 ![alt text](images\MultivaluedAttribute.JPG)
 
 An attribute that can be derived from other attributes of the entity type is known as a **_derived attribute_**. e.g.; Age (can be derived from DOB). In ER diagram, the derived attribute is represented by a dashed oval.
