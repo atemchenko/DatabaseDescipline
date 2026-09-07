@@ -66,7 +66,7 @@ Tables can have relationships established using foreign keys, which allows to co
 #### Relationship types:
 
 - **_One-to-One (1:1):_** Each record in Table A relates to exactly one record in Table B
-  _Example:_ Country - capital city, Sitizen - identification code, Person - their fingerprints e.t.c
+  _Example:_ Country - President, Unit - Commander e.t.c
 - **_One-to-Many (1: N):_** A single record in Table A connects to multiple records in Table B.
   Example: Customer - Orders.
 - **_Many-to-Many (N:M):_** Records in Table A relate to multiple records in Table B, and vice versa. \
