@@ -233,7 +233,7 @@ NoSQL databases are suitable for horizontal expansion because:
 
 ##### Data
 
-- Raw facts stored in structured or unstructured formats.
+- Raw facts stored in structured or unstructured formats. On its own, raw data lacks context or a specific meaning, but when processed, structured, and organized by a DBMS, it transforms into meaningful
 - **_Operational Data:_** Actual user data (e.g., name, age).
 - **_Metadata:_** Data about data (e.g., storage time, size, data type).
 - Core reason DBMS exists—to manage and store data efficiently.
