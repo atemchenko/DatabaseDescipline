@@ -9,7 +9,7 @@
 A landmark paper by Codd (**1970**) defined the relational model and nonprocedural ways of querying data in the relational model, and relational databases were born.
 According to Code **_Relation_** is a set of tuples and attributes.
 
-![alt text](<images\Relations by Codd.JPG>)
+![alt text](<images/Relations by Codd.JPG>)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A **relation** consists of a **heading** and a **body**. The **heading** defines a set of **attributes**, each with a name and data type (sometimes called a domain). The number of attributes in this set is the relation's degree or arity. The **body** is a set of **tuples**. A tuple is a collection of n values, where n is the relation's degree, and each value in the tuple corresponds to a unique attribute. The number of tuples in this set is the relation's cardinality.
 
@@ -54,11 +54,11 @@ Oracle Database, MySQL, PostgreSQL, MSSQL e.t.c\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data in RDBMS are stored in tables structured into rows and columns. Each row represents a unique record, and each column represents a specific attribute of that record.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Each row represents an instance of entity, while each column captures a specific characteristic, such as a id, name, address, fist name, last name etc.
 
-![alt text](images\spreadsheet.jpg)
+![alt text](images/spreadsheet.jpg)
 
 Tables can have relationships established using foreign keys, which allows to combine data from different tables.
 
-![alt text](images\Relationship.jpg)
+![alt text](images/Relationship.jpg)
 
 **_Relation_** - by Codd is a set of tuples and attributes. \
 **_Relationship_** - a logical connection or association between two or more tables (entities) that is established using primary and foreign keys.
@@ -128,7 +128,7 @@ _*Example:*_
 
 A company may store the information of dependents (Parents, Children, Spouse) of an Employee. But the dependents can't exist without the employee. So dependent will be a Weak Entity Type and Employee will be identifying entity type for dependent, which means it is Strong Entity Type.
 
-![alt text](<images\Strong&weak entities.JPG>)
+![alt text](<images/Strong&weak entities.JPG>)
 
 ###### Participation constraint
 
@@ -142,43 +142,43 @@ Example:
 The diagram depicts the 'Enrolled in' relationship set with Student Entity set having total participation and Course Entity set having partial participation.\
 _This means that every student must enrolls for at least one course. On the other hand, some courses may not have any students enrolled._
 
-![alt text](images\Participations.JPG)
+![alt text](images/Participations.JPG)
 
 ###### Attributes in ER Model
 
 **_Attributes_** are the properties that define the entity type. For example, for a Student entity Roll_No, Name, DOB, Age, Address, and Mobile_No are the attributes that define entity type Student. In ER diagram, the attribute is represented by an oval.
 
 The attribute which uniquely identifies each entity in the entity set is called the **_key attribute_**. In ER diagram, the key attribute is represented by an oval with an underline.\
-![alt text](images\KeyAttribute.JPG)
+![alt text](images/KeyAttribute.JPG)
 
 An attribute composed of many other attributes is called a _**composite attribute**_. For example, the Address attribute of the student Entity type consists of Street, City, State, and Country. In ER diagram, the composite attribute is represented by an oval comprising of ovals.
 
-![alt text](images\CompositeAttribute.JPG)
+![alt text](images/CompositeAttribute.JPG)
 
 An attribute consisting of more than one value for a given entity. For example, PhoneNo (can be more than one for a given student). In ER diagram, a _**multivalued attribute**_ is represented by a double oval.
-![alt text](images\MultivaluedAttribute.JPG)
+![alt text](images/MultivaluedAttribute.JPG)
 
 An attribute that can be derived from other attributes of the entity type is known as a **_derived attribute_**. e.g.; Age (can be derived from DOB). In ER diagram, the derived attribute is represented by a dashed oval.
 
-![alt text](<images\Derrived attribute.JPG>)
+![alt text](<images/Derrived attribute.JPG>)
 
 The Complete Entity Type Student with its Attributes can be represented as:
 
-![alt text](<images\Student with all attributes.JPG>)
+![alt text](<images/Student with all attributes.JPG>)
 
 ###### Relationship Type and Relationship Set
 
 A **_Relationship Type_** represents the association between entity types. For example, ‘Enrolled in’ is a relationship type that exists between entity type Student and Course. In ER diagram, the relationship type is represented by a diamond and connecting the entities with lines.
-![alt text](images\RelationshipType.JPG)
+![alt text](images/RelationshipType.JPG)
 
 The number of different entity sets participating in a relationship set is called the _**degree of a relationship set**_.
 
 **_Unary/Recursive Relationship:_** When there is only ONE entity set participating in a relation. For example, one person is married to only one person.
-![alt text](images\UnaryRelationship.JPG)
+![alt text](images/UnaryRelationship.JPG)
 **_Binary Relationship:_** When there are TWO entities set participating in a relationship. For example, a Student is enrolled in a Course.
-![alt text](images\BinaryRelationShip.JPG)
+![alt text](images/BinaryRelationShip.JPG)
 **_N-ary Relationship:_** When there are n entities set participating in a relationship, the relationship is called an n-ary relationship.
-![alt text](<images\N-ary relationship.JPG>)
+![alt text](<images/N-ary relationship.JPG>)
 
 ###### Cardinality in ER Model
 
@@ -189,17 +189,17 @@ Cardinality can be of different types:
 **_One-to-One_**\
 When each entity in each entity set can take part only once in the relationship, the cardinality is one-to-one. Let us assume that one person can be issued only one passport, and one passport is issued to only one person. So, the relationship will be One-to-One (1 : 1), meaning that each person has a single passport, and each passport belongs to a single person.
 
-![alt text](images\1to1.JPG)
+![alt text](images/1to1.JPG)
 
 **_One-to-Many_**\
 In a one-to-many relationship, one entity can be associated with multiple entities. For example, a single Surgeon Department can have many Doctors. Therefore, the cardinality of this relationship is 1 to M, meaning one department can have many doctors.
 
-![alt text](images\1toMany.JPG)
+![alt text](images/1toMany.JPG)
 
 **_Many-to-Many_**
 When entities in all entity sets can take part more than once in the relationship cardinality is many to many. Let us assume that an employee can work on multiple projects and each project can have multiple employees working on it. So, the relationship will be many-to-many (M:N), meaning that one employee may be associated with several projects, and one project may involve several employees.
 
-![alt text](images\MtoM.JPG)
+![alt text](images/MtoM.JPG)
 
 ###### How to Draw an ER Diagram
 
@@ -224,13 +224,13 @@ Usefull for logical and phisical database data model visualization.
 
 #### ERD Table notation
 
-![alt text](<images\Table notation.jpg>)
+![alt text](<images/Table notation.jpg>)
 
 #### ERD relationships notation
 
-![alt text](<images\Relationship notation.jpg>)
+![alt text](<images/Relationship notation.jpg>)
 
-![alt text](images\Cardinalities.png)
+![alt text](images/Cardinalities.png)
 
 ### Transactions and ACID
 
@@ -254,4 +254,4 @@ _**SQL (Structured Query Language)**_ is a standard programming language used fo
 
 SQL Commands are mainly categorized into five categories:
 
-![alt text](images\commands.jpg)
+![alt text](images/commands.jpg)

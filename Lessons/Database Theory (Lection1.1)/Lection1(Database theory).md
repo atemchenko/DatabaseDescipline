@@ -39,7 +39,7 @@ Digital data can be contrasted with analog data, which is represented by a value
 A landmark paper by Codd (**1970**) defined the relational model and nonprocedural ways of querying data in the relational model, and relational databases were born.
 According to Code **_Relation_** is a set of tuples and attributes.
 
-![alt text](<images\Relations by Codd.JPG>)
+![alt text](<images/Relations by Codd.JPG>)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A **relation** consists of a **heading** and a **body**. The **heading** defines a set of **attributes**, each with a name and data type (sometimes called a domain). The number of attributes in this set is the relation's degree or arity. The **body** is a set of **tuples**. A tuple is a collection of n values, where n is the relation's degree, and each value in the tuple corresponds to a unique attribute. The number of tuples in this set is the relation's cardinality.
 
@@ -133,7 +133,7 @@ JOIN Products ON Orders.Product_ID = Products.Product_ID;
 - _**Partition tolerance**_\
   The system continues to operate despite an arbitrary number of messages being dropped (or delayed) by the network between nodes.
 
-![alt text](<images\CAP theorem.JPG>)
+![alt text](<images/CAP theorem.JPG>)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _**BASE**_ ( _Basically Available, Soft State, Eventual Consistency_ ) acronym was invented by **Dan Pritchett**, a Technical Fellow at eBay, in **2008**. He officially introduced and defined the term in his landmark article titled [_"BASE: An Acid Alternative"_](https://queue.acm.org/detail.cfm?id=1394128), published in July 2008 by the Association for Computing Machinery (ACM).
 
@@ -217,7 +217,7 @@ NoSQL databases are suitable for horizontal expansion because:
 
 #### DBMS components
 
-![alt text](<images\DBMS components.jpg>)
+![alt text](<images/DBMS components.jpg>)
 
 ##### Hardware
 
