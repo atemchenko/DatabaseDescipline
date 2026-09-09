@@ -10,7 +10,7 @@
 
 ##### Unnormalized table:
 
-![alt text](<images\Unnormalized table.JPG>)
+![alt text](<images/Unnormalized table.JPG>)
 
 The first thing to notice is this table serves many purposes
 including:
@@ -24,7 +24,7 @@ including:
 
 ##### Reason #1 - Data duplication
 
-![alt text](<images\Unnormalized table duplication.JPG>)
+![alt text](<images/Unnormalized table duplication.JPG>)
 
 Duplicated information presents two problems:
 
@@ -38,24 +38,24 @@ Duplicated information presents two problems:
 
 - **Insert Anomaly**
 
-![alt text](<images\Insert Anomaly.JPG>)
+![alt text](<images/Insert Anomaly.JPG>)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There are facts we cannot record until we know information for the entire row. In our example we cannot record a new sales office until we also know the salesperson. Why? Because in order to create the record,we need provide a primary key. In our case this is the EmployeeID.
 
 - **Update Anomaly**
 
-![alt text](<images\Update Anomaly.JPG>)
+![alt text](<images/Update Anomaly.JPG>)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The same information is recorded in multiple rows. For instance, if the office number changes, then there are multiple updates that need to be made. If these updates are not successfully completed across all rows, then an inconsistency occurs.
 
 - **Deletion Anomaly**
 
-![alt text](<images\Deletion Anomaly.JPG>)
+![alt text](<images/Deletion Anomaly.JPG>)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deletion of a row can cause more than one set of facts to be removed. For instance, if John Hunt retires, then deleting that row causes us to lose information about the New York office.
 
 ##### Reason #3 - Query Issues
 
-![alt text](images\SearchAndSortIssue.JPG)
+![alt text](images/SearchAndSortIssue.JPG)
 
 SELECT SalesOffice
 FROM SalesStaff
@@ -147,7 +147,7 @@ The repeating group `StudentPhones` is split into its own row per phone number. 
 | S2        | 555-3333 |
 | S3        | 555-4444 |
 
-**Primary key of `Enrollments_1NF`**: composite `(StudentID, CourseID)` — this is the natural key, since a student can enroll in many courses and a course has many students.
+**Primary key of `Enrollments_1NF`**: composite `(StudentID, CourseID)` - this is the natural key, since a student can enroll in many courses and a course has many students.
 
 **What improved**: every cell now holds one value; phone numbers can be queried/indexed normally.
 **What's still broken**: massive redundancy (Dr. Ivanov's office repeats every time he teaches a course someone is enrolled in), and several unrelated "themes" (student, course, instructor, room, advisor) are jammed into one table.
@@ -161,9 +161,9 @@ The repeating group `StudentPhones` is split into its own row per phone number. 
 A table is in 2NF if:
 
 1. It is in 1NF, **and**
-2. Every non-key attribute is **fully functionally dependent on the whole primary key** — i.e., no non-key attribute depends on only _part_ of a composite key.
+2. Every non-key attribute is **fully functionally dependent on the whole primary key** - i.e., no non-key attribute depends on only _part_ of a composite key.
 
-2NF only matters when the primary key is **composite** (more than one column). If the key is a single column, 1NF ⇒ 2NF automatically.
+2NF only matters when the primary key is **composite** (more than one column). If the key is a single column, 1NF -> 2NF automatically.
 
 ### Problems it solves
 
@@ -177,12 +177,12 @@ A table is in 2NF if:
 
 In `Enrollments_1NF`, the key is `(StudentID, CourseID)`. Check each non-key column:
 
-| Column                                                         | Depends on                                                          |
-| -------------------------------------------------------------- | ------------------------------------------------------------------- |
-| StudentName                                                    | StudentID only → **partial dependency**                             |
-| AdvisorName, AdvisorDept                                       | StudentID only → **partial dependency**                             |
-| CourseName, Instructor, InstructorOffice, RoomID, RoomBuilding | CourseID only → **partial dependency**                              |
-| Grade                                                          | the _whole_ key `(StudentID, CourseID)` → correctly full dependency |
+| Column                                                         | Depends on                                                           |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| StudentName                                                    | StudentID only -> **partial dependency**                             |
+| AdvisorName, AdvisorDept                                       | StudentID only -> **partial dependency**                             |
+| CourseName, Instructor, InstructorOffice, RoomID, RoomBuilding | CourseID only -> **partial dependency**                              |
+| Grade                                                          | the _whole_ key `(StudentID, CourseID)` -> correctly full dependency |
 
 Everything except `Grade` is a partial dependency. We split them out:
 
@@ -225,9 +225,9 @@ Everything except `Grade` is a partial dependency. We split them out:
 A table is in 3NF if:
 
 1. It is in 2NF, **and**
-2. It has **no transitive dependencies** — every non-key attribute depends **directly** on the primary key, and not on another non-key attribute.
+2. It has **no transitive dependencies** - every non-key attribute depends **directly** on the primary key, and not on another non-key attribute.
 
-(Formally: for every functional dependency X → Y, either X is a superkey, or Y is part of a candidate key.)
+(Formally: for every functional dependency X -> Y, either X is a superkey, or Y is part of a candidate key.)
 
 ### Problems it solves
 
@@ -235,12 +235,12 @@ A table is in 3NF if:
 
 ### Problems that remain
 
-- 3NF still permits certain anomalies when a table has **multiple overlapping candidate keys** with dependencies between their parts — the narrower **BCNF** rule (below) is needed for that edge case.
+- 3NF still permits certain anomalies when a table has **multiple overlapping candidate keys** with dependencies between their parts - the narrower **BCNF** rule (below) is needed for that edge case.
 
 ### Applying it to our example
 
-- In `Courses_2NF`: `Instructor → InstructorOffice` and `RoomID → RoomBuilding` are transitive dependencies.
-- In `Students_2NF`: `AdvisorName → AdvisorDept` is a transitive dependency.
+- In `Courses_2NF`: `Instructor -> InstructorOffice` and `RoomID -> RoomBuilding` are transitive dependencies.
+- In `Students_2NF`: `AdvisorName -> AdvisorDept` is a transitive dependency.
 
 Split further:
 
@@ -284,16 +284,16 @@ Split further:
 
 (`Enrollments_2NF` and `StudentPhones_1NF` carry over unchanged.)
 
-**What improved**: an instructor's office is stored once, period — regardless of how many courses they teach. Same for room→building and advisor→department. Every non-key column now describes only the entity named by the primary key.
-**What's still broken**: nothing in _this_ example — our data happens not to trigger the BCNF edge case. We'll show that edge case separately below, since it requires a table with overlapping composite candidate keys.
+**What improved**: an instructor's office is stored once, period - regardless of how many courses they teach. Same for room -> building and advisor -> department. Every non-key column now describes only the entity named by the primary key.
+**What's still broken**: nothing in _this_ example -> our data happens not to trigger the BCNF edge case. We'll show that edge case separately below, since it requires a table with overlapping composite candidate keys.
 
 ---
 
-## 5. Boyce-Codd Normal Form (BCNF) — the "3.5NF" checkpoint
+## 5. Boyce-Codd Normal Form (BCNF) - the "3.5NF" checkpoint
 
 ### Definition
 
-A table is in BCNF if, for every functional dependency **X → Y**, **X is a superkey** (i.e., X alone could determine every column in the table). It's a stricter version of 3NF that closes a loophole 3NF allows: 3NF tolerates a non-superkey X → Y dependency _if_ Y happens to be part of some candidate key; BCNF does not.
+A table is in BCNF if, for every functional dependency **X -> Y**, **X is a superkey** (i.e., X alone could determine every column in the table). It's a stricter version of 3NF that closes a loophole 3NF allows: 3NF tolerates a non-superkey X -? Y dependency _if_ Y happens to be part of some candidate key; BCNF does not.
 
 ### Problems it solves
 
@@ -311,15 +311,15 @@ Suppose we track tutoring sessions:
 | S1        | Physics | Dr. Sokol |
 | S2        | Math    | Dr. Orlov |
 
-Rule: each `Tutor` teaches exactly **one** `Subject` (but a subject may have several tutors, and a student can have several tutors for different subjects). Candidate keys are `(StudentID, Subject)` and `(StudentID, Tutor)`. But `Tutor → Subject` holds, and `Tutor` is _not_ a superkey — this is 3NF-compliant (Subject is part of a candidate key) but **violates BCNF**.
+Rule: each `Tutor` teaches exactly **one** `Subject` (but a subject may have several tutors, and a student can have several tutors for different subjects). Candidate keys are `(StudentID, Subject)` and `(StudentID, Tutor)`. But `Tutor -> Subject` holds, and `Tutor` is _not_ a superkey - this is 3NF-compliant (Subject is part of a candidate key) but **violates BCNF**.
 
 **Anomaly**: if Dr. Orlov switches from teaching Math to teaching Chemistry, you must update _every row_ where Dr. Orlov appears, or the table becomes inconsistent (some rows say Math, some say Chemistry, for the same tutor).
 
 **Decomposition into BCNF:**
 
-`Tutors` (`Tutor` PK → `Subject`) and `Assignments` (`StudentID`, `Tutor` → composite PK). Now `Tutor → Subject` lives in exactly one place.
+`Tutors` (`Tutor` PK -> `Subject`) and `Assignments` (`StudentID`, `Tutor` -> composite PK). Now `Tutor -> Subject` lives in exactly one place.
 
-Our main running example (`Instructors_3NF`, `Rooms_3NF`, `Courses_3NF`, etc.) is already in BCNF — each has a single-column key that determines everything else, with no overlapping candidate keys.
+Our main running example (`Instructors_3NF`, `Rooms_3NF`, `Courses_3NF`, etc.) is already in BCNF - each has a single-column key that determines everything else, with no overlapping candidate keys.
 
 ---
 
@@ -330,7 +330,7 @@ Our main running example (`Instructors_3NF`, `Rooms_3NF`, `Courses_3NF`, etc.) i
 A table is in 4NF if:
 
 1. It is in BCNF, **and**
-2. It has **no non-trivial multi-valued dependencies** — i.e., it doesn't force two or more _independent_ multi-valued facts about the same entity into one table.
+2. It has **no non-trivial multi-valued dependencies** - i.e., it doesn't force two or more _independent_ multi-valued facts about the same entity into one table.
 
 A multi-valued dependency exists when, for a fixed value of one attribute, a set of values of another attribute exists **independently** of a third attribute.
 
@@ -340,7 +340,7 @@ A multi-valued dependency exists when, for a fixed value of one attribute, a set
 
 ### Applying it to our example
 
-Suppose we want to track, per course, both the **set of textbooks used** and the **set of languages the course is offered in** — and these two facts are completely independent of each other (any textbook could pair with any language).
+Suppose we want to track, per course, both the **set of textbooks used** and the **set of languages the course is offered in** - and these two facts are completely independent of each other (any textbook could pair with any language).
 
 **Bad design (violates 4NF):**
 
@@ -353,7 +353,7 @@ Suppose we want to track, per course, both the **set of textbooks used** and the
 
 Notice: to add one more textbook for C10, you must add a row **for every existing language** (and vice versa) just to keep the cross-product consistent. That's the classic 4NF insertion anomaly.
 
-**4NF fix** — split the two independent multi-valued facts into separate tables:
+**4NF fix** - split the two independent multi-valued facts into separate tables:
 
 **`CourseTextbooks_4NF`**
 
@@ -370,28 +370,28 @@ Notice: to add one more textbook for C10, you must add a row **for every existin
 | C10           | Ukrainian |
 
 **What improved**: adding a new textbook no longer requires touching language rows, and vice versa; no more forced cross-product rows.
-**What's still possible**: a rarer case — a **join-dependency** that isn't reducible to simple multi-valued dependencies. That's what 5NF addresses.
+**What's still possible**: a rarer case - a **join-dependency** that isn't reducible to simple multi-valued dependencies. That's what 5NF addresses.
 
 ---
 
-## 7. Fifth Normal Form (5NF) — a.k.a. Project-Join Normal Form (PJ/NF)
+## 7. Fifth Normal Form (5NF) - a.k.a. Project-Join Normal Form (PJ/NF)
 
 ### Definition
 
 A table is in 5NF if:
 
 1. It is in 4NF, **and**
-2. It cannot be losslessly decomposed into **any** smaller set of tables without losing information encoded in a specific **join dependency** — informally, every join dependency in the table is implied by its candidate keys. If a table _can_ be split further without loss, and rejoining always reconstructs the original data exactly (no spurious rows), 5NF says you should split it.
+2. It cannot be losslessly decomposed into **any** smaller set of tables without losing information encoded in a specific **join dependency** - informally, every join dependency in the table is implied by its candidate keys. If a table _can_ be split further without loss, and rejoining always reconstructs the original data exactly (no spurious rows), 5NF says you should split it.
 
 ### Problems it solves
 
-- **Join anomalies caused by three-way (or more) circular business constraints** that can't be captured by simple functional or multi-valued dependencies — cases where pairwise combinations of two facts are _not_ independent of the third, but the three-way combination still has redundancy a plain 4NF table can't remove.
+- **Join anomalies caused by three-way (or more) circular business constraints** that can't be captured by simple functional or multi-valued dependencies - cases where pairwise combinations of two facts are _not_ independent of the third, but the three-way combination still has redundancy a plain 4NF table can't remove.
 
 ### A worked example for our scenario
 
 Suppose the business rule is:
 
-> An `Instructor` can teach a `Subject`. A `Subject` can be offered in a `Term` (semester). If an instructor teaches a subject, **and** that subject is offered in a term, **and** that instructor is teaching that term at all — then the instructor teaches that subject in that term.
+> An `Instructor` can teach a `Subject`. A `Subject` can be offered in a `Term` (semester). If an instructor teaches a subject, **and** that subject is offered in a term, **and** that instructor is teaching that term at all - then the instructor teaches that subject in that term.
 
 This three-way circular rule is exactly the classic case a single table over-generalizes:
 
@@ -403,15 +403,15 @@ This three-way circular rule is exactly the classic case a single table over-gen
 | Dr. Ivanov  | Networks  | Fall2026 |
 | Dr. Petrova | Databases | Fall2026 |
 
-If we only know the three **pairwise** facts —
+If we only know the three **pairwise** facts
 
 - Dr. Ivanov teaches {Databases, Networks}
 - {Databases, Networks} offered in {Fall2026}
 - Dr. Ivanov and Dr. Petrova both teach in {Fall2026}
 
-— storing them as one flat three-column table forces us to either duplicate rows to represent all valid combinations, or risk implying a combination (e.g., "Dr. Petrova teaches Networks in Fall2026") that isn't actually true, purely as an artifact of the join.
+storing them as one flat three-column table forces us to either duplicate rows to represent all valid combinations, or risk implying a combination (e.g., "Dr. Petrova teaches Networks in Fall2026") that isn't actually true, purely as an artifact of the join.
 
-**5NF fix** — decompose into the three pairwise relationships that actually hold independently:
+**5NF fix** - decompose into the three pairwise relationships that actually hold independently:
 
 **`InstructorSubject_5NF`**
 
@@ -435,9 +435,9 @@ If we only know the three **pairwise** facts —
 | Dr. Ivanov  | Fall2026 |
 | Dr. Petrova | Fall2026 |
 
-The actual valid `(Instructor, Subject, Term)` triples are recovered only where **all three pairwise facts agree** — this is the join-dependency property 5NF is built around. Any additional pairwise fact (say, Dr. Petrova starts teaching Networks) is added in exactly one small table, without touching the others, and without risk of the "phantom row" problem a flat table creates.
+The actual valid `(Instructor, Subject, Term)` triples are recovered only where **all three pairwise facts agree** - this is the join-dependency property 5NF is built around. Any additional pairwise fact (say, Dr. Petrova starts teaching Networks) is added in exactly one small table, without touching the others, and without risk of the "phantom row" problem a flat table creates.
 
-**What improved**: eliminated the last class of redundancy — one that only appears with three-or-more-way circular associations. Each independent pairwise fact is stored exactly once.
+**What improved**: eliminated the last class of redundancy - one that only appears with three-or-more-way circular associations. Each independent pairwise fact is stored exactly once.
 **What remains**: this is the final classical normal form; further "improvement" beyond 5NF (e.g., Domain-Key Normal Form, DKNF) is mostly of theoretical interest and rarely pursued in practice, since 5NF already removes all redundancy expressible via join dependencies.
 
 ---
@@ -470,8 +470,8 @@ SubjectTerm(Subject FK, Term)
 InstructorTerm(Instructor FK, Term)
 ```
 
-Every fact now lives in exactly one place; every table's non-key columns depend on "the key, the whole key, and nothing but the key" (the classic mnemonic for 2NF–3NF), and no table forces artificial combinations of independent facts.
+Every fact now lives in exactly one place; every table's non-key columns depend on "the key, the whole key, and nothing but the key" (the classic mnemonic for 2NF-3NF), and no table forces artificial combinations of independent facts.
 
 ## 10. A practical note
 
-In real-world schema design, most production databases stop at **3NF or BCNF** — 4NF and 5NF violations are relatively rare and often intentionally tolerated (denormalized) for read performance, with the anomalies managed at the application layer instead. Knowing the full ladder still matters: it tells you _exactly which anomaly you're choosing to accept_ when you denormalize on purpose.
+In real-world schema design, most production databases stop at **3NF or BCNF** - 4NF and 5NF violations are relatively rare and often intentionally tolerated (denormalized) for read performance, with the anomalies managed at the application layer instead. Knowing the full ladder still matters: it tells you _exactly which anomaly you're choosing to accept_ when you denormalize on purpose.

@@ -78,7 +78,7 @@ Action: Identify relationships using verbs (e.g., A Customer places an Order). E
 
 #### Conceptual schema for car rent company
 
-![alt text](images\CarRentalConceptual.svg)
+![alt text](images/CarRentalConceptual.svg)
 
 #### Conceptual data model (schema) conclusion
 
@@ -105,11 +105,11 @@ We choose RDBMS with relational data model (database theory context)
 
 Steps to get logical model from conceptual:
 
-![alt text](images\FromConceptualToLogical+normalizw.JPG)
+![alt text](images/FromConceptualToLogical+normalizw.JPG)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For logical model creation we will use ERD (Crow's Foot Notation (Information Engineering / IE)) to vizualize the relationship between entities within a database. It is a design or blueprint of the database.\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For logical model creation we will use ERD (Crow's Foot Notation (Information Engineering / IE)) to vizualize the relationship between entities within a database. It is a design or blueprint of the database.
 
-![alt text](images\logicalCarRent.svg)
+![alt text](images/logicalCarRent.svg)
 
 #### Logical data model (schema) conclusion
 
