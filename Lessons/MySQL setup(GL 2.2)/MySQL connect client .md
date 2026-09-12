@@ -32,5 +32,9 @@ SELECT _ FROM MYSQL.USER;\
 select _ from mysql.user;\
 Select \* From Mysql.User;
 
+To exit from mysql, enter exit or quit at the prompt:
+
+> mysql> quit;
+
 Detailed information about MySQL command tool you can find in
 [MySQL command line tutorial](https://dev.mysql.com/doc/refman/9.7/en/mysql.html)
