@@ -2,7 +2,7 @@
 
 ### Theoretical basys
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_Database_** is organized collection of related data accessed through the use of a database management system (DBMS).\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_Database_** is an organized collection of related data managed by a database management system (DBMS).\
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_DBMS (Database Management System)_** is a software system that allows you to define, create, maintain, control access to a database, and perform **_CRUD_** (Create,Read,Update,Delete) operations on data in the database.
 

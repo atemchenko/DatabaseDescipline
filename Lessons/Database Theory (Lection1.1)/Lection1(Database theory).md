@@ -17,7 +17,7 @@ Digital data can be contrasted with analog data, which is represented by a value
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**_Model_** is a simplified representation of a system or phenomenon.\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**_Data model_**(database design context) is a visual or structural plan (for example, an entity-relationship diagram) that represents a given subject area in a projection onto a database with different levels of abstraction.\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**_Data model_**(data theory context) is is a mathematical framework that defines how data is structured, stored, and manipulated using formal rules and constraints.\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_Database_** is organized collection of related data accessed through the use of a database management system (DBMS).\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_Database_** A database is an organized collection of related data managed by a database management system (DBMS).\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **_DBMS (Database Management System)_** is a software system that allows you to define, create, maintain, control access to a database, and perform **_CRUD_** (Create,Read,Update,Delete) operations on data in the database.
 
 ## 2. Database evolution process
