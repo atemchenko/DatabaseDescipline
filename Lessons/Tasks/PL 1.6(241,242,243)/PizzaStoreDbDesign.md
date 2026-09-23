@@ -6,7 +6,7 @@
     - Primary keys (PK) and foreign keys (FK) must be defined.
     - Entities must be linked according to the established relationship multiplicity (cardinality).
 
-    - [logical data model ERD  example](<../../../../../for cadets/Lessons/Database design(Lection 1.4)/ERD_Crow's Foot Notation_Information Engineering  IE.drawio>)
+    - [logical data model ERD  example](<ERD_Crow's Foot Notation_Information Engineering  IE.drawio>)
 
 **! _Relational database design process is described in Lessons\Database design_([Lection 1.4](https://github.com/atemchenko/DatabaseDescipline/tree/main/Lessons/Database%20design(Lection%201.4)))**
 
@@ -31,4 +31,4 @@ he can use to run his business. He essentially wants to track customer pizza ord
 
 Currently, the pizzeria owner tracks orders in a spreadsheet.
 
-![alt text](Spreadsheet-1.jpg)
+![alt text](Spreadsheet.jpg)
