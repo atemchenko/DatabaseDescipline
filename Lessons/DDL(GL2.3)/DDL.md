@@ -55,6 +55,23 @@ CREATE TABLE orders
 
 [CREATE TABLE tutorial](https://dev.mysql.com/doc/refman/9.7/en/create-table.html)
 
+- Review create table script
+
+>SHOW \<table name>
+
+- Review table constraints 
+
+```sql
+SELECT 
+    CONSTRAINT_NAME, 
+    CONSTRAINT_TYPE 
+FROM 
+    information_schema.TABLE_CONSTRAINTS 
+WHERE 
+    TABLE_SCHEMA = \<database name>
+    AND TABLE_NAME = \<table name>
+```
+
 - Displaying table schema
 
 To display table schema use [DESCRIBE](https://dev.mysql.com/doc/refman/9.7/en/describe.html)
@@ -70,6 +87,21 @@ To delete the sales table from the database, use the following command:
 Alternatively, use the TRUNCATE TABLE statement to permanently remove all rows from a table without deleting the table itself:
 
 > TRUNCATE TABLE \<table name>;
+
+- Alter table
+
+add foreign key
+```sql
+ALTER TABLE <table name>
+     add constraint <fk name>  foreign key (<column name>)   REFERENCES <referenced table name> (<referenced table column>) ON UPDATE {CASCADE|NO ACTION|RESTRICT|SET} ON DELETE {CASCADE|NO ACTION|RESTRICT|SET};
+```
+
+drop constraint
+
+```sql
+ALTER TABLE <table name>
+     drop constraint <constraint name>;
+```
 
 ### MySQL storage engine types
 
