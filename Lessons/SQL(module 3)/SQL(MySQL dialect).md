@@ -911,7 +911,7 @@ ELSE result
 END
 ```
 
-_example:_
+_examples:_
 select all amount in one column with gradation in anotther (grade) column. Gradation: less than 2 - low amount, less than 5 - medium amount, more than 5 - high amount.
 
 ```sql 
@@ -925,86 +925,158 @@ end
 from payment;
 ```
 
+How many films with G and PG ratings do we have?
+
+```sql
+select
+sum(case 
+when rating in ('pg','g')
+ then 1
+else 0
+end) as rating
+from film;
+```
+### JOINS
+
+JOINS re used to combine data from two or more tables based on a related column.
+
+#### INNER JOIN
+
+**_INNER JOIN_** is used to combine rows from two or more tables based on a related column. It returns only the rows that have matching values in both tables, filtering out non-matching records.
+
+![alt text](inner_join.jpg)
+
+_syntax:_
+```sql
+SELECT columns FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+```
+_example:_
+
+get information about customers and staff for payments 
+
+```sql
+select 
+payment_id,
+p.customer_id,
+c.first_name,
+c.last_name,
+s.first_name,
+s.last_name
+from payment p
+inner join customer c
+on p.customer_id = c.customer_id
+inner join staff s
+on p.staff_id = s.staff_id
+```
 
 
-#### DCL (Data Control Language)
 
-Commands that control access to data.
+#### RIGHT JOIN
 
-- `GRANT`
-  ```sql
-  GRANT SELECT ON students TO user1;
-  ```
-- `REVOKE`
-  ```sql
-  REVOKE SELECT ON students FROM user1;
-  ```
+**_RIGHT JOIN_** return all rows from the right table and matching rows from the left table.Shows NULL for unmatched left-table records.
 
-#### 3.5 TCL (Transaction Control Language)
+![alt text](right_join.jpg)
 
-Commands for managing transactions.
+_syntax:_
+```sql
+SELECT columns
+FROM table1
+RIGHT JOIN table2 ON  table1.column_name = table2.column_name;
+```
 
-- `BEGIN`
-  ```sql
-  BEGIN;
-  ```
-- `COMMIT`
-  ```sql
-  COMMIT;
-  ```
-- `ROLLBACK`
-  ```sql
-  ROLLBACK;
-  ```
+#### LEFT JOIN
 
-## DQL(advanced)
+**_LEFT JOIN_** return all rows from the left table and matching rows from the right table.Shows NULL for unmatched right-table records.
 
-- **WHERE Clause**
+![alt text](left_join.jpg)
 
-  ```sql
-  SELECT * FROM students WHERE age > 20;
-  ```
+_syntax:_
+```sql
+SELECT columns
+FROM table1
+LEFT JOIN table2 ON  table1.column_name = table2.column_name;
+```
+_examples_
 
-- **Aggregation Functions**
+The company wants to run a phone call campaing on all customers in 
+Texas (=district).
+What are the customers (first_name, last_name, phone number and their 
+district) from Texas?
 
-  ```sql
-  SELECT COUNT(*), AVG(age) FROM students;
-  ```
 
-- **Subqueries**
+```sql
+select 
+first_name, last_name, phone, district
+from customer c
+left join address a 
+on c.address_id = a.address_id
+where district = 'texas'
+```
+Are there any (old) addresses that are not related to any customer
 
-  ```sql
-  SELECT name FROM students WHERE age = (SELECT MAX(age) FROM students);
-  ```
+```sql
+select 
+*
+from  address a 
+left join customer c
+on c.address_id = a.address_id
+where c.customer_id is null
+```
+The company wants customize their campaigns to customers depending on 
+the country they are from.
+Which customers are from Brazil?
+Write a query to get first_name, last_name, email and the country from all 
+customers from Brazi
 
-- **Correlated Subqueries**
+```sql
+select 
+first_name, last_name, email, co.country
+from  customer c
+left join address a
+on c.address_id = a.address_id
+left join city ci
+on ci.city_id = a.city_id
+left join country co
+on  co.country_id = ci.country_id
+where country = 'brazil';
+```
+### UNION
 
-  ```sql
-  SELECT name FROM students s1 WHERE age > (SELECT AVG(age) FROM students s2);
-  ```
+_**UNION**_ operator is used to combine the result-set of two or more SELECT statements. The UNION operator automatically removes duplicate rows from the result set.
 
-- **JOIN Types**
-  - **INNER JOIN**
-    ```sql
-    SELECT s.name, c.course_name
-    FROM students s INNER JOIN courses c ON s.id = c.student_id;
-    ```
-  - **LEFT JOIN**
-    ```sql
-    SELECT s.name, c.course_name
-    FROM students s LEFT JOIN courses c ON s.id = c.student_id;
-    ```
-  - **RIGHT JOIN**
-    ```sql
-    SELECT s.name, c.course_name
-    FROM students s RIGHT JOIN courses c ON s.id = c.student_id;
-    ```
-  - **FULL OUTER JOIN**
-    ```sql
-    SELECT s.name, c.course_name
-    FROM students s FULL OUTER JOIN courses c ON s.id = c.student_id;
-    ```
+Requirements for UNION: 
+- Every SELECT statement within UNION must have the same number of columns
+- The columns must also have similar data types
+- The columns in every SELECT statement must also be in the same order
 
-## Conclusion
+_syntax:_
+```sql
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+```
+_examples_
 
-This tutorial provides an overview of SQL and its subtypes, including essential commands and complex querying techniques compatible with MySQL. Understanding these components is crucial for effective database administration and data manipulation.
+select all actors and customers names
+
+```sql
+select 
+first_name, 'actor' 
+from actor
+union
+select first_name, 'customer'
+from customer
+order by first_name asc
+```
+**_UNION ALL_** does not remove duplicates and works faster
+```sql
+select 
+first_name, 'actor' 
+from actor
+union all
+select first_name, 'customer'
+from customer
+order by first_name asc
+```
