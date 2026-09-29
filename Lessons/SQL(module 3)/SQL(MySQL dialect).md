@@ -944,7 +944,7 @@ JOINS re used to combine data from two or more tables based on a related column.
 
 **_INNER JOIN_** is used to combine rows from two or more tables based on a related column. It returns only the rows that have matching values in both tables, filtering out non-matching records.
 
-![alt text](inner_join.jpg)
+![alt text](images/inner_join.jpg)
 
 _syntax:_
 ```sql
@@ -977,7 +977,7 @@ on p.staff_id = s.staff_id
 
 **_RIGHT JOIN_** return all rows from the right table and matching rows from the left table.Shows NULL for unmatched left-table records.
 
-![alt text](right_join.jpg)
+![alt text](images/right_join.jpg)
 
 _syntax:_
 ```sql
@@ -990,7 +990,7 @@ RIGHT JOIN table2 ON  table1.column_name = table2.column_name;
 
 **_LEFT JOIN_** return all rows from the left table and matching rows from the right table.Shows NULL for unmatched right-table records.
 
-![alt text](left_join.jpg)
+![alt text](images/left_join.jpg)
 
 _syntax:_
 ```sql
@@ -1080,3 +1080,105 @@ select first_name, 'customer'
 from customer
 order by first_name asc
 ```
+### Subqueries
+
+#### Subqueries in where
+
+Select information about payments where amount is bigger then average paiments ammount.
+```sql
+select 
+*
+from payment
+where amount > (select avg(amount) from payment)
+```
+Select payment information about customers with first name starts from 'A'
+
+```sql
+select 
+*
+from payment
+where customer_id in (select customer_id from customer where first_name like 'a%')
+```
+_challenges:_
+
+Select all the films where the length in longer than the average length of all the films.
+
+Return all the films that are available in the inventory in store 2 more than 3 times. (use having count in subquery)
+
+Return all customer`s first and last names that have made payment on '2020-01-25'
+
+Return all customer`s first_names and email addresses that have spent more than $30.
+
+Return all the customer`s first and last names that are from California and spent more than 100 in total.
+
+#### Subqueries in from
+
+Select the average of the amounts spent by each customer over time
+
+```sql
+select avg(total_amount)
+from
+(select 
+customer_id, 
+sum(amount) as total_amount from payment
+group by customer_id)  as subquery
+```
+
+_challenges:_
+
+Waht is the average total amount spent per day (average daily revenue)?
+
+#### Subqueries in select
+
+Select all the data from payment and additional column with average amount
+
+```sql
+select 
+*, (select round(avg(amount), 2) from payment)
+from payment
+```
+_challenges:_
+
+Show all the payments together with how much the payment amount is below the maximum payment amount.
+
+#### Correlated subqueries
+
+Corelated subquery doesn`t work independently, subquery gets evaluated for every single row.
+
+##### Correlated subqueries in WHERE
+
+Show only those payments that have the highest amount per customer.
+```sql
+select * from payment p1
+where amount = (select max(amount) from payment p2 where p1.customer_id = p2.customer_id )
+```
+
+Show only those movie titles, their associated film_id and replacement_cost with the lowest replacement_costs for in each rating category. Also show the rating.
+
+```sql
+select title, film_id, replacement_cost, rating
+from film f1
+where replacement_cost = (select min(replacement_cost) from film f2 where f1.rating = f2.rating )
+```
+_challenge:_
+
+Show only those movie titles, their associated film_id and the length that have the highest length in each rating category. Also show the rating.
+
+##### Correlated subqueries in SELECT
+
+Show all payment information plus the maximum amount for every customer
+
+```sql
+select 
+*, (select max(amount) from payment p2 where p1.customer_id = p2.customer_id) as 'max amount'
+from payment p1
+order by 'max amount'
+```
+_challanges:_
+
+Show all the payments plus the total amount for every customer as well as the number of payments of each customer.
+
+Show only those films with the highest replacement costs in their rating 
+category plus show the average replacement cost in their rating category.
+
+Show only those payments with the highest payment for each customer's first name - including the payment_id of that payment
