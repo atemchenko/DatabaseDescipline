@@ -74,6 +74,23 @@ CREATE TABLE orders
 
 [CREATE TABLE tutorial](https://dev.mysql.com/doc/refman/9.7/en/create-table.html)
 
+- Review create table script
+
+>SHOW CREATE TABLE \<table name>
+
+- Review table constraints 
+
+```sql
+SELECT 
+    CONSTRAINT_NAME, 
+    CONSTRAINT_TYPE 
+FROM 
+    information_schema.TABLE_CONSTRAINTS 
+WHERE 
+    TABLE_SCHEMA = '\<database name>'
+    AND TABLE_NAME = '\<table name>'
+```
+
 - Displaying table schema
 
 To display table schema use [DESCRIBE](https://dev.mysql.com/doc/refman/9.7/en/describe.html)
@@ -103,8 +120,6 @@ _syntax_:
 ALTER TABLE table_name
 AFTER_ACTION
 ```
-
-_examples_:
 
 Drop _**first_name**_ column from the _**staff**_ table.
 
@@ -148,6 +163,26 @@ ALTER TABLE staff
 MODIFY COLUMN store_id SMALLINT NOT NULL;
 ```
 
+**add constraint**
+```sql
+ALTER TABLE <table name>
+     add constraint <fk name>  foreign key (<column name>)   REFERENCES <referenced table name> (<referenced table column>) ON UPDATE {CASCADE|NO ACTION|RESTRICT|SET} ON DELETE {CASCADE|NO ACTION|RESTRICT|SET};
+```
+_example:_
+
+Add a foreign key to the _**orders**_ table references the primary key customer_id in the **_customer_** table. 
+
+```sql
+alter table orders
+add constraint fk_order_customer foreign key (customer_id) references customer(customer_id) on update cascade on delete restrict;
+```
+
+**drop constraint**
+
+```sql
+ALTER TABLE <table name>
+     drop constraint <constraint name>;
+```
 [ALTER TABLE full tutorial](https://dev.mysql.com/doc/refman/8.0/en/alter-table.html)
 
 ### MySQL storage engine types

@@ -10,12 +10,12 @@ In modern versions like MySQL 8.x, DDL statements are atomic, meaning the schema
 - Create a new database
   > CREATE DATABASE \<database name>;
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if database with name myFirstDb already exists you will receive an error.
-To avoid error use option _**IF NOT EXISTS**_
+  if database with name myFirstDb already exists you will receive an error.
+  To avoid error use option _**IF NOT EXISTS**_
 
-> CREATE DATABASE IF NOT EXISTS \<database name>;
+  > CREATE DATABASE IF NOT EXISTS \<database name>;
 
-[CREATE DATABASE tutorial](https://dev.mysql.com/doc/refman/9.7/en/create-database.html)
+  [CREATE DATABASE tutorial](https://dev.mysql.com/doc/refman/9.7/en/create-database.html)
 
 - Switch to the database context.
 
@@ -57,7 +57,7 @@ CREATE TABLE orders
 
 - Review create table script
 
->SHOW \<table name>
+>SHOW CREATE TABLE \<table name>
 
 - Review table constraints 
 
@@ -68,8 +68,8 @@ SELECT
 FROM 
     information_schema.TABLE_CONSTRAINTS 
 WHERE 
-    TABLE_SCHEMA = \<database name>
-    AND TABLE_NAME = \<table name>
+    TABLE_SCHEMA = '\<database name>'
+    AND TABLE_NAME = '\<table name>'
 ```
 
 - Displaying table schema
@@ -90,18 +90,81 @@ Alternatively, use the TRUNCATE TABLE statement to permanently remove all rows f
 
 - Alter table
 
-add foreign key
+_**ALTER TABLE**_ is used to modify an existing table, namely:\
+&nbsp; - adding, deleting columns;\
+&nbsp; - add, drop constraints;\
+&nbsp; - rename columns;
+
+_syntax_:
+
+```sql
+ALTER TABLE table_name
+AFTER_ACTION
+```
+
+Drop _**first_name**_ column from the _**staff**_ table.
+
+```sql
+ALTER TABLE staff
+DROP COLUMN first_name;
+```
+
+Add _**date_of_birth**_ column to the _**staff**_ table
+
+```sql
+ALTER TABLE staff
+ADD COLUMN date_of_birth DATE;
+```
+
+Change column _**address_id**_ type in the _**staff**_ table.
+
+```sql
+ALTER TABLE staff
+ALTER COLUMN address_id TYPE SMALLINT;
+```
+
+Rename column _**first_name**_ to _**name**_ in the _**staff**_ table.
+
+```sql
+ALTER TABLE staff
+RENAME COLUMN first_name TO name;
+```
+
+for legacy versions (better for backward compatibility)
+
+```sql
+ALTER TABLE staff
+CHANGE COLUMN first_name name VARCHAR(50);
+```
+
+Add NOT NULL constraint for store_id column in the staff table.
+
+```sql
+ALTER TABLE staff
+MODIFY COLUMN store_id SMALLINT NOT NULL;
+```
+
+**add constraint**
 ```sql
 ALTER TABLE <table name>
      add constraint <fk name>  foreign key (<column name>)   REFERENCES <referenced table name> (<referenced table column>) ON UPDATE {CASCADE|NO ACTION|RESTRICT|SET} ON DELETE {CASCADE|NO ACTION|RESTRICT|SET};
 ```
+_example:_
 
-drop constraint
+Add a foreign key to the _**orders**_ table references the primary key customer_id in the **_customer_** table. 
+
+```sql
+alter table orders
+add constraint fk_order_customer foreign key (customer_id) references customer(customer_id) on update cascade on delete restrict;
+```
+
+**drop constraint**
 
 ```sql
 ALTER TABLE <table name>
      drop constraint <constraint name>;
 ```
+[ALTER TABLE full tutorial](https://dev.mysql.com/doc/refman/8.0/en/alter-table.html)
 
 ### MySQL storage engine types
 
