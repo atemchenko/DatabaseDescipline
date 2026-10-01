@@ -1035,6 +1035,28 @@ LEFT JOIN table2 ON  table1.column_name = table2.column_name;
 ```
 _examples_
 
+Get customers with names starts from 'b' as the left table and customers with names starts from 'bo' as right table.
+```sql
+use greencycles;
+select 
+-- count(*)
+c1.customer_id 'left id',
+c1.first_name 'left first name',
+c1.last_name 'fight first name',
+c2.customer_id 'right id',
+c2.first_name 'right first name',
+c2.last_name 'right first name'
+from
+(select first_name, last_name, customer_id
+from customer 
+where last_name like 'b%') as c1
+left join
+(select first_name, last_name, customer_id
+from customer
+where last_name like 'bo%') as c2
+on c1.customer_id  = c2.customer_id
+```
+
 The company wants to run a phone call campaing on all customers in 
 Texas (=district).
 What are the customers (first_name, last_name, phone number and their 
