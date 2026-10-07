@@ -32,24 +32,44 @@ In modern versions like MySQL 8.x, DDL statements are atomic, meaning the schema
 
 - Create new table\
   New tables are added to an existing database using the CREATE TABLE statement.
+_syntax:_
+```sql
+CREATE TABLE <table_name>(
+column_name1 TYPE [CONSTRAINT],
+column_name2 TYPE [CONSTRAINT],
+[...])
+```
+_example:_
+
+&nbsp;&nbsp;&nbsp;&nbsp; Create a table called online_sales with the following columns: transaction_id, customer_id, film_id, amount, promotion_code.
+Transaction_id shoul be the primary key.
+The columns customer_id and film_id should be foreign keys to the relevant tables.
+The amount column can contain values from 0.00 to 999.99 - nulls should not be allowed.
+The column promotion_code contains a promotion code of at maximum 10 characters. If there is no value you should set the default value 'None'.
 
 ```sql
-CREATE TABLE customer
+create table film
 (
-  customer_id int NOT NULL,
-  customer_name char(20) NOT NULL,
-  customer_address char(20) NULL,
-  PRIMARY KEY (customer_id)
+film_id int primary key,
+film_name varchar(50)
 );
 
-CREATE TABLE orders
+CREATE TABLE customer
 (
-  order_id int NOT NULL,
-  order_name char(20) NOT NULL,
-  order_address char(20) NULL,
-  customer_id int NOT NULL,
-  PRIMARY KEY (order_id),
-  FOREIGN KEY (customer_Id) references customer(customer_id)
+  customer_id int primary key,
+  customer_name char(20) NOT NULL,
+  customer_address char(20) NULL
+);
+
+create table online_sales
+(
+transaction_id int primary key,
+customer_id int,
+film_id int,
+amount numeric(6,2) not null,
+promotion_code varchar(10),
+foreign key (customer_id) references customer(customer_id) on update cascade on delete restrict,
+foreign key (film_id) references film(film_id) on update cascade on delete restrict
 );
 ```
 
@@ -59,7 +79,21 @@ CREATE TABLE orders
 
 >SHOW CREATE TABLE \<table name>
 
+
+#### Constraints
+
+**_NOT NULL_** - Ensures that column can't have NULL values
+**_UNIQUE_** - Ensures that all values in a column are different
+**_DEFAULT_** - Sets a default value for a column if no value is specified
+**_PRIMARY KEY_** - A combination of s NOT NULL and UNIQUE. Uniquely identifies each row in a table.
+**_REFERENCES_** - Ensures referential integrity
+**_CHECK_** - check constraints
+
+
+
 - Review table constraints 
+
+
 
 ```sql
 SELECT 

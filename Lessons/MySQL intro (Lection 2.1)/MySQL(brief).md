@@ -200,7 +200,7 @@ _1. Application Layer (1-5ms)_
 _2. MySQL Server Layer (5-50ms)_
 
 - Connection handler receives query (1ms)
-- Parser validates syntax and builds AST (2-5ms)
+- Parser validates syntax and builds AST ( Abstract Syntax Tree )  (2-5ms)
 - Optimizer analyzes execution plan:
   - Checks available indexes on customers.status and orders.order_date
   - Estimates join cost: customers -> orders vs orders -> customers

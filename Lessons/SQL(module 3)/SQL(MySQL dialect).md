@@ -51,24 +51,44 @@ _**!** In case of issues whith cirylic characters, check character set and colla
 
 - Create new table\
   New tables are added to an existing database using the CREATE TABLE statement.
+_syntax:_
+```sql
+CREATE TABLE <table_name>(
+column_name1 TYPE [CONSTRAINT],
+column_name2 TYPE [CONSTRAINT],
+[...])
+```
+_example:_
+
+&nbsp;&nbsp;&nbsp;&nbsp; Create a table called online_sales with the following columns: transaction_id, customer_id, film_id, amount, promotion_code.
+Transaction_id shoul be the primary key.
+The columns customer_id and film_id should be foreign keys to the relevant tables.
+The amount column can contain values from 0.00 to 999.99 - nulls should not be allowed.
+The column promotion_code contains a promotion code of at maximum 10 characters. If there is no value you should set the default value 'None'.
 
 ```sql
-CREATE TABLE customer
+create table film
 (
-  customer_id int NOT NULL,
-  customer_name char(20) NOT NULL,
-  customer_address char(20) NULL,
-  PRIMARY KEY (customer_id)
+film_id int primary key,
+film_name varchar(50)
 );
 
-CREATE TABLE orders
+CREATE TABLE customer
 (
-  order_id int NOT NULL,
-  order_name char(20) NOT NULL,
-  order_address char(20) NULL,
-  customer_id int NOT NULL,
-  PRIMARY KEY (order_id),
-  FOREIGN KEY (customer_Id) references customer(customer_id)
+  customer_id int primary key,
+  customer_name char(20) NOT NULL,
+  customer_address char(20) NULL
+);
+
+create table online_sales
+(
+transaction_id int primary key,
+customer_id int,
+film_id int,
+amount numeric(6,2) not null,
+promotion_code varchar(10),
+foreign key (customer_id) references customer(customer_id) on update cascade on delete restrict,
+foreign key (film_id) references film(film_id) on update cascade on delete restrict
 );
 ```
 
@@ -77,6 +97,13 @@ CREATE TABLE orders
 - Review create table script
 
 >SHOW CREATE TABLE \<table name>
+
+**_NOT NULL_** - Ensures that column can't have NULL values
+**_UNIQUE_** - Ensures that all values in a column are different
+**_DEFAULT_** - Sets a default value for a column if no value is specified
+**_PRIMARY KEY_** - A combination of s NOT NULL and UNIQUE. Uniquely identifies each row in a table.
+**_REFERENCES_** - Ensures referential integrity
+**_CHECK_** - check constraints
 
 - Review table constraints 
 
@@ -261,10 +288,78 @@ _ This will only work if _**transaction_id**_(PK integer) is auto-incremented. O
     (271,11,10.99);
   ```
 
-- `DELETE`
-  ```sql
-  DELETE FROM students WHERE name = 'Alice';
-  ```
+### DELETE
+
+**_DELETE_** command is used to delete existing records in a table.
+_syntax:_
+
+```sql
+DELETE FROM <table> 
+WHERE condition
+
+-- delete all rows without condition
+DELETE FROM <table> 
+
+```
+_example:_
+
+Delete customers with id 2,3,4
+```sql
+delete  from customer
+where customer_id in (2,3,4)
+```
+
+### UPDATE
+
+_**UPDATE**_ command is used to update or modify one or more records in a table.
+_syntax:_
+
+```sql
+UPDATE <table> 
+SET <column>=value
+```
+_examples:_
+
+Change lastname to 'Brawn'for customer woth castomer_id = 1.
+```sql
+update  customer
+set last_name = 'BRAWN'
+where customer_id = 1;
+``` 
+Move all emails to lower case.
+```sql
+update  customer
+set email = lower(email);
+```
+Update all rental prices that are 0.99 to 1.99.
+```sql
+update film
+set rental_rate = 1.99
+where rental_rate = 0.99;
+```
+SET SQL_SAFE_UPDATES = 0|1;
+
+The customer table needs to be altered as well:
+1. Add the column initials (data type varchar(10))
+2. Update the values to the actual initials for example Frank Smith should be F.S
+
+```sql
+alter table customer
+add column initials varchar(10);
+
+UPDATE customer
+SET initials = CONCAT(
+    UPPER(SUBSTRING(first_name, 1, 1)), -- Перша літера імені
+    '.',
+    UPPER(SUBSTRING(last_name, 1, 1)), -- Перша літера прізвища
+    '.'
+)
+WHERE 
+(last_name IS NOT NULL AND  last_name NOT LIKE '% %')
+AND
+(first_name IS NOT NULL AND  first_name NOT LIKE '% %');
+```
+
 
 ## Setup educational database
 
@@ -1239,3 +1334,17 @@ Show only those films with the highest replacement costs in their rating
 category plus show the average replacement cost in their rating category.
 
 Show only those payments with the highest payment for each customer's first name - including the payment_id of that payment
+
+### VIEWS
+
+```sql
+create view greedy_customers
+as select c.customer_id, c.first_name, c.last_name, sum(p.amount) as total
+from customer c
+inner join payment p
+on p.customer_id = c.customer_id
+group by c.customer_id, c.first_name, c.last_name
+having sum(p.amount) < 
+(select avg(t.total) 
+from  (select sum(amount) as total from payment group by customer_id) t);
+```
