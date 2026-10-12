@@ -1335,20 +1335,6 @@ category plus show the average replacement cost in their rating category.
 
 Show only those payments with the highest payment for each customer's first name - including the payment_id of that payment
 
-### VIEWS
-
-```sql
-create view greedy_customers
-as select c.customer_id, c.first_name, c.last_name, sum(p.amount) as total
-from customer c
-inner join payment p
-on p.customer_id = c.customer_id
-group by c.customer_id, c.first_name, c.last_name
-having sum(p.amount) < 
-(select avg(t.total) 
-from  (select sum(amount) as total from payment group by customer_id) t);
-```
-
 ### Window functions
 MySQL **_Window Functions_** perform calculations across a set of rows related to the current row without grouping or collapsing the result.\
 Can divide rows into groups using **_PARTITION BY_**.\
@@ -1430,4 +1416,147 @@ the number of payments that were made by this customer
 and that amount
 Order the results by payment_id.
 
+### VIEWS
 
+**_VIEW_** is a virtual table based on the result of a SQL query. It does not usually store the data separately; instead, it displays data from one or more existing tables.
+
+- Simplifies complex SQL queries.
+- Provides a customized way to display data.
+- Can combine data from multiple tables.
+- Helps restrict access to specific columns or rows.
+- Don`t use physical storage
+
+_syntax:_
+
+```sql
+-- create view
+CREATE VIEW <view_name> 
+AS query
+
+--alter view
+ALTER VIEW <view_name>
+AS query
+
+-- delete view
+DROP VIEW <view_name>
+```
+
+_examples:_
+
+Create a view that returns customers whose name begins with the letter "C"
+```sql
+CREATE VIEW customer_anonymous
+AS 
+SELECT customer_id, initials 
+FROM customer
+WHERE first_name LIKE 'C%'; 
+
+--usage
+select * from customer_anonymous;
+```
+Create a view to retrieve information about customers whose total payments are less than the average total.
+
+```sql
+create view greedy_customers
+as select c.customer_id, c.first_name, c.last_name, sum(p.amount) as total
+from customer c
+inner join payment p
+on p.customer_id = c.customer_id
+group by c.customer_id, c.first_name, c.last_name
+having sum(p.amount) < 
+(select avg(t.total) 
+from  (select sum(amount) as total from payment group by customer_id) t);
+
+--usage
+select * from greedy_customers;
+```
+
+_challenge:_
+
+Create a view called films_category that shows a list of the film titles including their title, length and category name ordered descendingly by the length.
+Filter the results to only the movies in the category 'Action' and 'Comedy'.
+
+### User-defined functions
+
+**_FUNCTION_**  is a set of SQL statements that perform some operation and return a single value.
+
+_syntax:_
+```sql
+CREATE FUNCTION <function_name> (param1, param2,…)
+RETURNS return_datatype
+RETURN <function body>
+```
+_example_
+
+Create a function that returns the number of movies with a rental rate between the minimum and maximum parameters
+
+```sql
+delimiter //
+create	function count_rental_rate (min_r decimal(4,2), max_r decimal(4,2))
+returns int
+deterministic
+begin
+declare movie_count int; 
+select count(*)
+into movie_count
+from film
+where rental_rate between min_r and max_r; 
+return movie_count;
+end //
+delimiter ;
+
+-- usage
+select count_rental_rate(4,9)
+```
+
+### Stored procedures
+
+**_Stored procedures_** are used to group SQL statements and business logic into a single reusable unit that runs inside the database. These help in tasks such as:
+
+- Executing multiple SQL statements as one operation.
+- Accepting input and returning output values.
+- Reducing repeated code in applications.
+- Enforcing consistent business rules across systems.
+
+_syntax:_
+```sql
+CREATE PROCEDURE procedure_name
+(parameter1 data_type, parameter2 data_type, ...)
+AS
+BEGIN
+   -- SQL statements to be executed
+END
+```
+_**CREATE PROCEDURE**_ – Creates a new stored procedure.\
+_**@parameters**_ – Used to pass values into the procedure.\
+_**BEGIN…END**_ – Contains the SQL code that the procedure runs.
+
+_example:_
+
+Create a stored procedure that returns  movies with a rental rate between the minimum and maximum parameters
+
+```sql
+delimiter //
+create	procedure  get_rental_rate_sp 
+(min_r decimal(4,2), 
+max_r decimal(4,2))
+begin
+select *
+from film
+where rental_rate between min_r and max_r;
+end //
+delimiter ;
+
+-- usage
+call get_rental_rate_sp(3,9);
+```
+
+### Stored procedures vs Functions
+ Feature	| Stored Procedure| 	User-Defined Function (UDF)|
+|--:|---|---|
+Return Value |	Does not return a value via a RETURN statement. It returns data through OUT parameters or by generating a result set (tabular data).	|Must return a single scalar value using the RETURN keyword.|
+How to Call	|Invoked independently using the CALL procedure_name() statement.	| Embedded directly inside other SQL queries, e.g., SELECT function_name(column) FROM table.|
+Data Modification	| Fully allows data modification statements like INSERT, UPDATE, and DELETE.|	Generally used for reading and computing data. Modifying database tables inside a function is highly restricted or forbidden.|
+Parameters	| Supports three types of parameters: IN (input), OUT (output), and INOUT (combined).|	Supports input parameters only (all parameters act as IN).|
+Transaction Control|	Allows transaction management statements like START TRANSACTION, COMMIT, and ROLLBACK.|	Does not allow managing transactions within the function body.|
+Calling Other Objects|	Can call other stored procedures and functions.	| Can call other functions, but cannot call a stored procedure.|
