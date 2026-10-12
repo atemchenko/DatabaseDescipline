@@ -1348,3 +1348,86 @@ having sum(p.amount) <
 (select avg(t.total) 
 from  (select sum(amount) as total from payment group by customer_id) t);
 ```
+
+### Window functions
+MySQL **_Window Functions_** perform calculations across a set of rows related to the current row without grouping or collapsing the result.\
+Can divide rows into groups using **_PARTITION BY_**.\
+Can arrange rows using _**ORDER BY**_.
+Supports functions such as  _**SUM(), AVG(), ROW_NUMBER(), RANK() and DENSE_RANK()**_.
+
+_syntax:_ 
+
+```sql
+SELECT column_name1,
+       window_function(column_name2)
+       OVER (
+           [PARTITION BY column_name3]
+           [ORDER BY column_name4]
+       ) AS new_column
+FROM table_name;
+```
+_examples:_
+
+
+Show information about each payment. optional. In a separate column, display information about the average payment amount of the current customer, order per customer information by payment date:
+
+```sql
+select 
+customer_id,
+payment_id,
+payment_date,
+amount,
+avg(amount) over (partition by customer_id order by payment_date) as customer_average
+from payment
+```
+
+HShow information about each payment. optional. In a separate column, display information how many client payments did a particular employee handle?
+
+```sql
+select 
+customer_id,
+payment_id,
+payment_date,
+staff_id,
+amount,
+sum(amount) over (partition by customer_id, staff_id) as customer_staff_payments_coount
+from payment
+```
+
+Write a query that returns the list of movies including-----
+title,
+length,
+category,
+average length of movies in that category.
+Order the results by film_id.
+
+```sql
+select 
+f.film_id,
+title,
+length,
+c.name,
+avg(length) over(partition by c.category_id)
+from film f
+inner join film_category fc
+on f.film_id = fc.film_id
+inner join category c
+on c.category_id = fc.category_id;
+```
+
+Runnung sum for amounts by date for each customer
+```sql
+use greencycles;
+select *,
+sum(amount) over(partition by customer_id order by payment_date) running_sum
+from payment
+``` 
+
+_challenges:_
+
+Write a query that returns all payment details including-
+the number of payments that were made by this customer 
+and that amount
+Order the results by payment_id.
+
+
