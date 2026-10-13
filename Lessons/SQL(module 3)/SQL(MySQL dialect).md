@@ -1550,6 +1550,176 @@ delimiter ;
 -- usage
 call get_rental_rate_sp(3,9);
 ```
+#### Stored procedures with parameters
+Output parameters let a stored procedure communicate results back to the calling session without a result set. This is useful when you need to return a single scalar value, a status code, or multiple computed values alongside a result set.
+
+![alt text](images/TransactionParameters.jpg)
+
+MySQL provides two output parameter modes:
+
+- **_out_** - the procedure writes a value; the initial value inside the procedure is always NULL.
+- **_inout_** - the caller provides an initial value; the procedure can read and modify it; the final value is returned.
+
+_Setup tables for learning_
+```sql
+CREATE TABLE accounts (
+    id      INT PRIMARY KEY AUTO_INCREMENT,
+    owner   VARCHAR(100),
+    balance DECIMAL(12,2) NOT NULL DEFAULT 0.00
+);
+
+CREATE TABLE transfers (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    from_id     INT,
+    to_id       INT,
+    amount      DECIMAL(12,2),
+    transferred_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE taxes (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  from_id     INT,
+  amount      DECIMAL(12,2),
+  transferred_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO accounts (owner, balance) VALUES
+    ('Alice', 5000.00),
+    ('Bob',   2000.00),
+    ('Carol', 8500.00);
+```
+_examples:_
+
+Create SP (storage procedure) that accepts _**accaunt id**_ as input parameter and writes accaunts  balance into output parameter.
+```sql
+DELIMITER //
+
+CREATE PROCEDURE GetAccountBalance (
+    IN  p_account_id INT,
+    OUT p_balance    DECIMAL(12,2)
+)
+BEGIN
+    SELECT balance INTO p_balance
+    FROM accounts
+    WHERE id = p_account_id;
+END//
+
+DELIMITER ;
+
+-- usage
+CALL GetAccountBalance(1, @bal);
+SELECT @bal AS balance;
+
+```
+Create SP (storage procedure) that writes accounts count(), total accaunts ballance, average accounts ballance and max account ballance into output variables.
+``` sql
+DELIMITER $$
+
+CREATE PROCEDURE GetAccountSummary (
+    OUT p_count       INT,
+    OUT p_total       DECIMAL(12,2),
+    OUT p_avg         DECIMAL(12,2),
+    OUT p_max_balance DECIMAL(12,2)
+)
+BEGIN
+    SELECT
+        COUNT(*),
+        SUM(balance),
+        AVG(balance),
+        MAX(balance)
+    INTO p_count, p_total, p_avg, p_max_balance
+    FROM accounts;
+END$$
+
+DELIMITER ;
+
+-- usage
+CALL GetAccountSummary(@cnt, @total, @avg, @max_bal);
+
+SELECT
+    @cnt      AS account_count,
+    @total    AS total_balance,
+    @avg      AS average_balance,
+    @max_bal  AS max_balance;
+```
+Create SP to provide money transfer from one account to another. Use an OUT parameter as a return code so the caller knows whether the operation succeeded.
+
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE TransferFunds (
+    IN  p_from_id INT,
+    IN  p_to_id   INT,
+    IN  p_amount  DECIMAL(12,2),
+    OUT p_status  VARCHAR(50)
+)
+BEGIN
+    DECLARE v_balance DECIMAL(12,2);
+
+    START TRANSACTION;
+
+    -- Check source balance
+    SELECT balance INTO v_balance
+    FROM accounts
+    WHERE id = p_from_id
+    FOR UPDATE;
+
+    IF v_balance IS NULL THEN
+        SET p_status = 'ERROR: Source account not found';
+        ROLLBACK;
+    ELSEIF v_balance < p_amount THEN
+        SET p_status = 'ERROR: Insufficient funds';
+        ROLLBACK;
+    ELSE
+        UPDATE accounts SET balance = balance - p_amount WHERE id = p_from_id;
+        UPDATE accounts SET balance = balance + p_amount WHERE id = p_to_id;
+
+        INSERT INTO transfers (from_id, to_id, amount)
+        VALUES (p_from_id, p_to_id, p_amount);
+
+        COMMIT;
+        SET p_status = 'SUCCESS';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- usage
+
+CALL TransferFunds(1, 2, 1000.00, @result);
+SELECT @result AS transfer_status;
+```
+Create SP that returns accounts data according to limit parameter and writes returned rows count into OUT parameter simultaneously.
+
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE GetTopAccounts (
+    IN  p_limit     INT,
+    OUT p_total_returned INT
+)
+BEGIN
+    SELECT id, owner, balance
+    FROM accounts
+    ORDER BY balance DESC
+    LIMIT p_limit;
+
+    -- Also set the count of rows returned
+    SET p_total_returned = p_limit;
+END$$
+
+DELIMITER ;
+
+-- usage
+
+CALL GetTopAccounts(2, @returned);
+SELECT @returned AS rows_in_result;
+```
+Best Practices
+- Use a p_ prefix for parameters and v_ prefix for local variables to prevent naming conflicts with column names.
+- Always initialize OUT parameters at the start of the procedure body when there are early-return paths, to avoid returning stale NULL values.
+- Use status code OUT parameters instead of relying only on exceptions for expected business logic failures (insufficient funds, not found, etc.).
+- For complex error handling, combine OUT status parameters with DECLARE ... HANDLER to catch SQL exceptions.
 
 ### Stored procedures vs Functions
  Feature	| Stored Procedure| 	User-Defined Function (UDF)|
@@ -1560,3 +1730,67 @@ Data Modification	| Fully allows data modification statements like INSERT, UPDAT
 Parameters	| Supports three types of parameters: IN (input), OUT (output), and INOUT (combined).|	Supports input parameters only (all parameters act as IN).|
 Transaction Control|	Allows transaction management statements like START TRANSACTION, COMMIT, and ROLLBACK.|	Does not allow managing transactions within the function body.|
 Calling Other Objects|	Can call other stored procedures and functions.	| Can call other functions, but cannot call a stored procedure.|
+
+### Triggers
+_**TRIGGER**_ is a special database object that automatically executes when an INSERT, UPDATE or DELETE operation occurs on a table. Triggers help automate database actions and maintain data consistency.
+
+- Runs automatically when a specified event occurs.
+- Executes before or after INSERT, UPDATE or DELETE.
+- Helps automate database operations.
+- Useful for validation, logging and updating related data.
+
+_syntax:_
+
+```sql
+CREATE TRIGGER trigger_name
+BEFORE | AFTER INSERT | UPDATE | DELETE
+ON table_name
+FOR EACH ROW
+trigger_body;
+
+-- view triggers in the current database
+SHOW TRIGGERS;
+
+-- view the definition of a specific trigger:
+SHOW CREATE TRIGGER <trigger name>;
+
+-- delete trigger
+DROP TRIGGER <trigger name>;
+
+```
+|Trigger Type |	Description|
+| :--|:--|
+|BEFORE INSERT|	Runs before a new row is inserted.|
+|AFTER INSERT	|Runs after a new row is inserted.|
+|BEFORE UPDATE|	Runs before an existing row is updated.|
+|AFTER UPDATE	| Runs after an existing row is updated.|
+|BEFORE DELETE|	Runs before an existing row is deleted.|
+|AFTER DELETE|	Runs after an existing row is deleted.|
+
+- The trigger runs inside the same transaction block as the INSERT, UPDATE, or DELETE statement that activated it.
+- If the trigger encounters an error or fails a validation check, the parent operation—and any other changes made by the trigger up to that point—will automatically roll back (assuming you are using a transactional storage engine like InnoDB).
+- Propagation	If a BEFORE trigger fails, the operation on the specific row is aborted, preventing data corruption before it even happens.
+
+_examples:_
+
+Add trigger to calculate and provide 20% tax for accounts income
+```sql
+
+DELIMITER //
+
+CREATE TRIGGER after_account_income_tax
+BEFORE update ON accounts
+FOR EACH ROW
+BEGIN
+    DECLARE tax_amount DECIMAL(12,2);
+    IF (NEW.balance > OLD.balance) 
+    THEN
+    SET tax_amount = (NEW.balance - OLD.balance) * 0.20;
+    SET NEW.balance = NEW.balance - tax_amount;
+    INSERT INTO taxes (from_id, amount)
+    VALUES (NEW.id, tax_amount);   
+    END IF;
+END //
+
+DELIMITER ;
+```
