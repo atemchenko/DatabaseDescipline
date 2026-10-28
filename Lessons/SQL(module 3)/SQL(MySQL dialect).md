@@ -76,8 +76,8 @@ film_name varchar(50)
 CREATE TABLE customer
 (
   customer_id int primary key,
-  customer_name char(20) NOT NULL,
-  customer_address char(20) NULL
+  customer_name varchar(20) NOT NULL,
+  customer_address varchar(100) NULL
 );
 
 create table online_sales
@@ -85,10 +85,10 @@ create table online_sales
 transaction_id int primary key,
 customer_id int,
 film_id int,
-amount numeric(6,2) not null,
-promotion_code varchar(10),
-foreign key (customer_id) references customer(customer_id) on update cascade on delete restrict,
-foreign key (film_id) references film(film_id) on update cascade on delete restrict
+amount numeric(7,2) not null,
+promotion_code char(10),
+foreign key (customer_id) references customer(customer_id),
+foreign key (film_id) references film(film_id)
 );
 ```
 
